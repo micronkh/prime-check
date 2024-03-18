@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Проверка простых чисел</title>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		html,
+		body {
+			width: 100%;
+			height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0;
+			padding: 0;
+			background: linear-gradient(to bottom right, #fcfdff, #fefefe);
+		}
+
+		body {
+			font-family: 'Roboto', sans-serif;
+		}
+
+		.container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			margin: 0;
+			padding: 0;
+		}
+
+		.container__form {
+			text-align: center;
+			max-width: 400px;
+			margin: 0 5px;
+		}
+
+		.input {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 10px;
+			box-sizing: border-box;
+			border: 2px solid #bbb;
+			border-radius: 5px;
+			background-color: #fcfdff;
+			font-size: 16px;
+			color: #333;
+		}
+
+		.input::-webkit-inner-spin-button,
+		.input::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		.button {
+			padding: 10px 20px;
+			background-color: #007bff;
+			border-radius: 5px;
+			color: #fff;
+			font-weight: 500;
+			border: none;
+			cursor: pointer;
+		}
+
+		.button:hover {
+			background-color: #0056b3;
+		}
+
+		.result {
+			margin-top: 20px;
+			text-align: center;
+		}
+
+		.prime-info {
+			margin-top: 10px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<form class="container__form" onsubmit="event.preventDefault(); checkPrime()">
+			<input type="number" class="input" id="numberInput" placeholder="Введите число от 0 до 1 000 000">
+			<button type="submit" class="button">Проверить</button>
+			<div class="result" id="result"></div>
+		</form>
+	</div>
+	<script>
+		function isPrime(num) {
+			if (num <= 1) return false;
+			if (num <= 3) return true;
+			if (num % 2 === 0 || num % 3 === 0) return false;
+			let i = 5;
+			while (i * i <= num) {
+				if (num % i === 0 || num % (i + 2) === 0) return false;
+				i += 6;
+			}
+			return true;
+		}
+
+		function findPrimes(number) {
+			let smallerPrime = null;
+			let largerPrime = null;
+			for (let i = number - 1; i >= 2; i--) {
+				if (isPrime(i)) {
+					smallerPrime = i;
+					break;
+				}
+			}
+			for (let i = number + 1; i <= 1000000; i++) {
+				if (isPrime(i)) {
+					largerPrime = i;
+					break;
+				}
+			}
+			return [smallerPrime, largerPrime];
+		}
+
+		function checkPrime() {
+			const result = document.getElementById('result');
+			const input = document.getElementById('numberInput').value;
+			const number = parseInt(input);
+			if (isNaN(number) || number < 0 || number > 1000000) {
+				result.innerHTML = 'Пожалуйста, введите число от 0 до 1 000 000.';
+			}
+			else {
+				if (isPrime(number)) {
+					result.innerHTML = number + ' - простое число.';
+				} else {
+					const primes = findPrimes(number);
+					let html = number + ' - не является простым числом.<br>';
+					html += `Первое простое число меньше: <span class="prime-info">${primes[0] || 'нет'}</span><br>`;
+					html += `Первое простое число больше: <span class="prime-info">${primes[1] || 'нет'}</span>`;
+					result.innerHTML = html;
+				}
+			}
+		}
+	</script>
+</body>
+
+</html>
